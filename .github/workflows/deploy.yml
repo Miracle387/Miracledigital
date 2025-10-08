@@ -1,4 +1,4 @@
-name: Deploy to EC2
+name: Deploy Mediplus App to EC2
 
 on:
   push:
@@ -23,11 +23,11 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build, Tag, and Push image
+      - name: Build, Tag, and Push Mediplus Image
         run: |
-          IMAGE_URI=919586551458.dkr.ecr.us-east-1.amazonaws.com/myapp:latest
-          docker build -t myapp .
-          docker tag myapp:latest $IMAGE_URI
+          IMAGE_URI=919586551458.dkr.ecr.us-east-1.amazonaws.com/mediplus:v1
+          docker build -t mediplus:v1 .
+          docker tag mediplus:v1 $IMAGE_URI
           docker push $IMAGE_URI
 
       - name: Deploy to EC2
@@ -37,7 +37,8 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker pull 919586551458.dkr.ecr.us-east-1.amazonaws.com/myapp:latest
-            docker stop myapp || true
-            docker rm myapp || true
-            docker run -d -p 80:80 --name myapp 919586551458.dkr.ecr.us-east-1.amazonaws.com/myapp:latest
+            IMAGE_URI=919586551458.dkr.ecr.us-east-1.amazonaws.com/mediplus:v1
+            docker pull $IMAGE_URI
+            docker stop mediplus || true
+            docker rm mediplus || true
+            docker run -d -p 80:80 --name mediplus $IMAGE_URI
