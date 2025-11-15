@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mediplus-deployment
+  labels:
+    app: mediplus
+spec:
+  replicas: 3 # Desired number of pod replicas
+  selector:
+    matchLabels:
+      app: mediplus
+  template:
+    metadata:
+      labels:
+        app: mediplus
+    spec:
+      containers:
+      - name: mediplus
+        image: 919586551458.dkr.ecr.us-east-1.amazonaws.com/mediplus:v1 # The container image to use
+        ports:
+        - containerPort: 80 # The port the container listens on
